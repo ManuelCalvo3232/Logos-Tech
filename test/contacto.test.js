@@ -75,3 +75,19 @@ test('las páginas estáticas responden 200', async () => {
     assert.equal(res.status, 200, ruta);
   }
 });
+
+test('una postulación se guarda con su motivo', async () => {
+  const { app, pool, enviados } = await preparar();
+  const res = await request(app).post('/api/contacto').send({ ...valido, motivo: 'postulacion' });
+  assert.equal(res.status, 201);
+  const { rows } = await pool.query('SELECT motivo FROM contactos');
+  assert.equal(rows[0].motivo, 'postulacion');
+  assert.equal(enviados[0].motivo, 'postulacion');
+});
+
+test('un motivo desconocido cae en consulta', async () => {
+  const { app, pool } = await preparar();
+  await request(app).post('/api/contacto').send({ ...valido, motivo: 'otra-cosa' });
+  const { rows } = await pool.query('SELECT motivo FROM contactos');
+  assert.equal(rows[0].motivo, 'consulta');
+});

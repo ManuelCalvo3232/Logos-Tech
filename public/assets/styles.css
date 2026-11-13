@@ -87,6 +87,7 @@ main > section, .pagina-interior {
 .btn--secundario:hover { background: var(--navy); color: #FFFFFF; }
 .btn--secundario-oscuro { background: transparent; color: #FFFFFF; border-color: #FFFFFF; }
 .btn--secundario-oscuro:hover { background: #FFFFFF; color: var(--navy); }
+.btn--sobre-teal { background: var(--navy); color: #FFFFFF; }
 .btn--navy { background: var(--navy); color: #FFFFFF; }
 .btn--navy:hover { background: var(--navy-hover); color: #FFFFFF; }
 .enlace { color: var(--teal-texto); font-weight: 600; text-decoration: underline; }
@@ -173,6 +174,7 @@ main > section, .pagina-interior {
 .trabaja { display: grid; gap: 24px; align-items: start; }
 
 /* Página de trabajos de clientes */
+.trabajo__acciones { display: flex; gap: 14px; flex-wrap: wrap; }
 .trabajo { display: grid; gap: 24px; padding: 32px 0; border-top: 2px solid var(--navy); }
 .trabajo h2 { margin-bottom: 8px; }
 .trabajo__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -197,6 +199,8 @@ main > section, .pagina-interior {
 .campo textarea { min-height: 140px; resize: vertical; }
 .campo input:focus, .campo textarea:focus { outline: 3px solid var(--teal); outline-offset: 0; border-color: var(--navy); }
 .campo small { color: var(--texto-suave); font-size: .85rem; }
+.campo select { font: inherit; font-size: 1rem; color: var(--texto); background: #FFFFFF; border: 1.5px solid #B7C3D1; border-radius: var(--radio); padding: 12px 14px; min-height: 48px; width: 100%; }
+.campo select:focus { outline: 3px solid var(--teal); outline-offset: 0; border-color: var(--navy); }
 .campo--trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .datos { border-top: 3px solid var(--teal); padding-top: 18px; display: grid; gap: 14px; }
 .datos dt { font-size: .8rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-texto); }
@@ -207,7 +211,7 @@ main > section, .pagina-interior {
 .estado--error { background: #FDF0EE; color: #B42318; border: 1px solid #B42318; }
 
 /* Pie */
-.pie { background: var(--navy); color: #C9D6E4; padding: 48px 0 32px; font-size: .92rem; }
+.pie { background: var(--navy); color: #C9D6E4; padding: 48px 0 32px; font-size: .92rem; scroll-snap-align: end; }
 .pie__grid { display: grid; gap: 28px; }
 .pie img { height: 52px; width: auto; }
 .pie h3 { color: #FFFFFF; font-size: .9rem; letter-spacing: .08em; text-transform: uppercase; }

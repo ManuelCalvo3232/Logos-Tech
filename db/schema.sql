@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS contactos (
   nombre      VARCHAR(120) NOT NULL,
   email       VARCHAR(254) NOT NULL,
   empresa     VARCHAR(120),
+  motivo      VARCHAR(20) NOT NULL DEFAULT 'consulta',
   mensaje     TEXT NOT NULL
 );
 

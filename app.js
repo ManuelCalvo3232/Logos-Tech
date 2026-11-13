@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const SCHEMA_PATH = path.join(__dirname, 'db', 'schema.sql');
 
+const MOTIVOS = ['consulta', 'postulacion'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Valida y normaliza el envío. Devuelve { errores, datos }.
@@ -21,13 +22,14 @@ export function validarContacto(entrada) {
   const email = limpiar(entrada.email).toLowerCase();
   const empresa = limpiar(entrada.empresa);
   const mensaje = limpiar(entrada.mensaje);
+  const motivo = MOTIVOS.includes(entrada.motivo) ? entrada.motivo : 'consulta';
 
   if (nombre.length < 2 || nombre.length > 120) errores.nombre = 'Ingresá tu nombre (entre 2 y 120 caracteres).';
   if (email.length > 254 || !EMAIL_RE.test(email)) errores.email = 'Ingresá un email válido.';
   if (empresa.length > 120) errores.empresa = 'El nombre de la empresa es demasiado largo.';
   if (mensaje.length < 10 || mensaje.length > 3000) errores.mensaje = 'Contanos tu proyecto (entre 10 y 3000 caracteres).';
 
-  return { errores, datos: { nombre, email, empresa: empresa || null, mensaje } };
+  return { errores, datos: { nombre, email, empresa: empresa || null, mensaje, motivo } };
 }
 
 const escapar = (texto) =>
@@ -43,6 +45,7 @@ export async function enviarAvisoBrevo(contacto, config) {
     <h2>Nueva consulta desde la web</h2>
     <p><strong>Nombre:</strong> ${escapar(contacto.nombre)}</p>
     <p><strong>Email:</strong> ${escapar(contacto.email)}</p>
+    <p><strong>Motivo:</strong> ${contacto.motivo === 'postulacion' ? 'Postulación laboral' : 'Consulta de proyecto'}</p>
     <p><strong>Empresa:</strong> ${escapar(contacto.empresa ?? '-')}</p>
     <p><strong>Mensaje:</strong></p>
     <p style="white-space:pre-line">${escapar(contacto.mensaje)}</p>
@@ -55,7 +58,7 @@ export async function enviarAvisoBrevo(contacto, config) {
       sender: { name: config.mailFromName, email: config.mailFromEmail },
       to: [{ email: config.notifyEmail }],
       replyTo: { email: contacto.email, name: contacto.nombre },
-      subject: `Nueva consulta de ${contacto.nombre}`,
+      subject: `${contacto.motivo === 'postulacion' ? 'Nueva postulación' : 'Nueva consulta'} de ${contacto.nombre}`,
       htmlContent: html,
     }),
   });
@@ -91,8 +94,8 @@ export function crearApp({ pool, config, enviarAviso = enviarAvisoBrevo }) {
 
     try {
       const { rows } = await pool.query(
-        'INSERT INTO contactos (nombre, email, empresa, mensaje) VALUES ($1, $2, $3, $4) RETURNING id, creado_en',
-        [datos.nombre, datos.email, datos.empresa, datos.mensaje],
+        'INSERT INTO contactos (nombre, email, empresa, mensaje, motivo) VALUES ($1, $2, $3, $4, $5) RETURNING id, creado_en',
+        [datos.nombre, datos.email, datos.empresa, datos.mensaje, datos.motivo],
       );
       const guardado = { ...datos, id: rows[0].id };
 
